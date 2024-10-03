@@ -1,0 +1,155 @@
+Documentação da API de Consulta de CEP em PHP
+ 
+ 
+---
+ 
+Objetivo:
+ 
+O objetivo desta API em PHP é fornecer um meio simples de consulta de endereços a partir de um CEP (Código de Endereçamento Postal). Ao receber um CEP, a API se comunica com um serviço externo (ViaCEP) para obter os dados do endereço e exibi-los ao usuário de forma amigável no navegador.
+ 
+ 
+---
+ 
+Como funciona:
+ 
+1. Entrada de Dados (Request): 
+ 
+A API recebe o CEP via uma requisição HTTP GET.
+ 
+O usuário fornece o CEP através de um formulário no navegador.
+ 
+A URL gerada após a submissão do formulário segue o formato:
+ 
+http://localhost/Stephanie/Atividade%20API%20UC9/api.php?cep=05025-010
+ 
+ 
+ 
+2. Tratamento dos Dados:
+ 
+O CEP é filtrado para remover qualquer caractere especial, como pontos ou traços.
+ 
+A API valida se o CEP tem exatamente 8 dígitos (formato correto no Brasil).
+ 
+ 
+ 
+3. Comunicação com a API ViaCEP:
+ 
+Caso o CEP seja válido, a API utiliza a função file_get_contents para fazer uma requisição HTTP à API externa do ViaCEP, no seguinte formato:
+ 
+https://viacep.com.br/ws/01001000/json/
+ 
+A resposta do ViaCEP vem no formato JSON contendo as informações do endereço, como rua, bairro, cidade e estado.
+ 
+ 
+ 
+4. Saída de Dados (Response):
+ 
+Se o CEP for válido e encontrado, a API decodifica o JSON recebido da ViaCEP e exibe as informações de forma organizada no navegador:
+ 
+Endereço:
+Bairro:
+Cidade:
+Estado:
+ 
+Se o CEP for inválido ou não encontrado, a API retorna uma mensagem informando o erro.
+ 
+ 
+ 
+ 
+ 
+---
+ 
+Comunicação Utilizada:
+ 
+Protocolo HTTP:
+ 
+A API recebe requisições via o método HTTP GET.
+ 
+Para obter os dados do CEP, a API faz uma requisição HTTP para a URL do ViaCEP, utilizando o protocolo HTTP.
+ 
+ 
+Formato de Dados:
+ 
+Entrada: O CEP é fornecido como um parâmetro de URL (GET), ex: ?cep=01001000.
+ 
+Saída: A resposta da API ViaCEP vem em formato JSON:
+ 
+{
+  "cep": "01001-000",
+  "logradouro": "Praça da Sé",
+  "complemento": "lado ímpar",
+  "bairro": "Sé",
+  "localidade": "São Paulo",
+  "uf": "SP",
+  "ibge": "3550308",
+  "gia": "1004",
+  "ddd": "11",
+  "siafi": "7107"
+}
+ 
+ 
+ 
+ 
+---
+ 
+Componentes e Funções:
+ 
+1. file_get_contents:
+ 
+Usado para fazer a requisição HTTP à API do ViaCEP e obter a resposta em JSON.
+ 
+ 
+ 
+2. json_decode:
+ 
+Decodifica a string JSON recebida e a transforma em um array associativo para facilitar a exibição dos dados.
+ 
+ 
+ 
+3. preg_replace:
+ 
+Remove caracteres especiais como traços e pontos do CEP, garantindo que ele seja composto apenas por números.
+ 
+ 
+ 
+4. GET Request:
+ 
+A API recebe os dados via método GET na URL, permitindo que o CEP seja passado como um parâmetro simples.
+ 
+ 
+ 
+ 
+ 
+---
+ 
+Exemplo de Uso:
+ 
+1. O usuário acessa a URL da API:
+
+ http://localhost/Stephanie/Atividade%20API%20UC9/api.php
+ 
+ 
+2. O usuário insere o CEP no campo de formulário e clica em "Consultar".
+ 
+ 
+3. A página faz a consulta ao ViaCEP e retorna o resultado:
+ 
+Endereço: Praça da Sé
+Bairro: Sé
+Cidade: São Paulo
+Estado: SP
+ 
+ 
+ 
+ 
+---
+ 
+Erros e Tratamentos:
+ 
+CEP Inválido: Se o CEP inserido for inválido (menos de 8 dígitos ou caracteres não numéricos), a API exibirá a mensagem:
+ 
+CEP inválido! O CEP deve conter 8 números.
+ 
+CEP Não Encontrado: Se o ViaCEP não encontrar o CEP informado, a API retorna a mensagem:
+ 
+CEP inválido!
